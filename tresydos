@@ -1,1 +1,72 @@
+import random
 
+def initialize_deck():
+    ranks = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A']
+    suits = ['Hearts', 'Diamonds', 'Clubs', 'Spades']
+    deck = [{'rank': rank, 'suit': suit} for rank in ranks for suit in suits]
+    return deck
+
+def shuffle_deck(deck):
+    random.shuffle(deck)
+
+def deal_cards(deck, num_players):
+    hands = [[] for _ in range(num_players)]
+
+    for _ in range(5):
+        for i in range(num_players):
+            card = deck.pop()
+            hands[i].append(card)
+
+    return hands
+
+def display_hand(hand):
+    for card in hand:
+        print(f"{card['rank']} of {card['suit']}")
+
+def is_tres_y_dos(hand):
+    ranks_count = {}
+    for card in hand:
+        rank = card['rank']
+        ranks_count[rank] = ranks_count.get(rank, 0) + 1
+
+    return 3 in ranks_count.values() and 2 in ranks_count.values()
+
+def evaluate_hand(hand):
+    if is_tres_y_dos(hand):
+        return "Tres y Dos"
+    # Add more conditions for other combinations
+
+    return "No combination"
+
+def determine_winner(hands):
+    winners = []
+    max_score = float('-inf')
+
+    for i, hand in enumerate(hands):
+        score = evaluate_hand(hand)
+        print(f"Player {i + 1}: {score}")
+        if score == "Tres y Dos":
+            winners.append(i + 1)
+        elif score == "No combination":
+            # Implement tie-breaking logic if needed
+            pass
+
+    if winners:
+        print(f"\nPlayer(s) {', '.join(map(str, winners))} win(s) with Tres y Dos!")
+    else:
+        print("\nNo winners this round.")
+
+def main():
+    num_players = int(input("Enter the number of players: "))
+    deck = initialize_deck()
+    shuffle_deck(deck)
+    hands = deal_cards(deck, num_players)
+
+    for i, hand in enumerate(hands):
+        print(f"\nPlayer {i + 1}'s hand:")
+        display_hand(hand)
+
+    determine_winner(hands)
+
+if __name__ == "__main__":
+    main()
