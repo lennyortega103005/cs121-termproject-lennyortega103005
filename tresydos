@@ -19,9 +19,10 @@ def deal_cards(deck, num_players):
 
     return hands
 
-def display_hand(hand):
-    for card in hand:
-        print(f"{card['rank']} of {card['suit']}")
+def display_hand(hand, player_num):
+    print(f"\nPlayer {player_num}'s hand:")
+    for i, card in enumerate(hand, start=1):
+        print(f"{i}. {card['rank']} of {card['suit']}")
 
 def is_tres_y_dos(hand):
     ranks_count = {}
@@ -61,12 +62,39 @@ def main():
     deck = initialize_deck()
     shuffle_deck(deck)
     hands = deal_cards(deck, num_players)
+    discard_pile = []
 
-    for i, hand in enumerate(hands):
-        print(f"\nPlayer {i + 1}'s hand:")
-        display_hand(hand)
+    for round_num in range(5):  # Assuming 5 rounds, you can modify this
+        print(f"\nRound {round_num + 1}:")
 
-    determine_winner(hands)
+        for i, hand in enumerate(hands):
+            display_hand(hand, i + 1)
+            drawn_card = deck[-1]
+            print(f"\nDrawn card: {drawn_card['rank']} of {drawn_card['suit']}")
+            decision = input("Do you want to draw this card? (y/n): ").lower()
+
+            if decision == 'n':
+                discard_pile.append(deck.pop())
+            else:
+                display_hand(hand, i + 1)
+                drop_index = int(input("Enter the index of the card you want to drop: ")) - 1
+                if 0 <= drop_index < len(hand):
+                    dropped_card = hand.pop(drop_index)
+                    print(f"Dropped card: {dropped_card['rank']} of {dropped_card['suit']}")
+                    discard_pile.append(drop_index)
+                    hand.insert(drop_index, drawn_card)
+                else:
+                    print("Invalid index. Card not dropped.")
+                    discard_pile.append(deck.pop())
+
+        determine_winner(hands)
+
+    print("\nDiscard Pile:")
+    for card in discard_pile:
+        if isinstance(card, dict):
+            print(f"{card['rank']} of {card['suit']}")
+        else:
+            print(f"Index {card} (card not kept)")
 
 if __name__ == "__main__":
     main()
