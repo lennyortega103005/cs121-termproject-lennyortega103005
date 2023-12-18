@@ -35,7 +35,6 @@ def is_tres_y_dos(hand):
 def evaluate_hand(hand):
     if is_tres_y_dos(hand):
         return "Tres y Dos"
-    # Add more conditions for other combinations
 
     return "No combination"
 
@@ -52,7 +51,7 @@ def main():
     hands = deal_cards(deck, num_players)
     discard_pile = []
     rounds = 0
-    max_rounds = 25  # Updated maximum rounds
+    max_rounds = 21  
 
     while True:
         rounds += 1
