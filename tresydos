@@ -35,27 +35,14 @@ def is_tres_y_dos(hand):
 def evaluate_hand(hand):
     if is_tres_y_dos(hand):
         return "Tres y Dos"
-    # Add more conditions for other combinations
 
     return "No combination"
 
 def determine_winner(hands):
-    winners = []
-    max_score = float('-inf')
-
     for i, hand in enumerate(hands):
-        score = evaluate_hand(hand)
-        print(f"Player {i + 1}: {score}")
-        if score == "Tres y Dos":
-            winners.append(i + 1)
-        elif score == "No combination":
-            # Implement tie-breaking logic if needed
-            pass
-
-    if winners:
-        print(f"\nPlayer(s) {', '.join(map(str, winners))} win(s) with Tres y Dos!")
-    else:
-        print("\nNo winners this round.")
+        if is_tres_y_dos(hand):
+            return i + 1
+    return None
 
 def main():
     num_players = int(input("Enter the number of players: "))
@@ -63,9 +50,12 @@ def main():
     shuffle_deck(deck)
     hands = deal_cards(deck, num_players)
     discard_pile = []
+    rounds = 0
+    max_rounds = 21  
 
-    for round_num in range(5):  # Assuming 5 rounds, you can modify this
-        print(f"\nRound {round_num + 1}:")
+    while True:
+        rounds += 1
+        print(f"\nRound {rounds}:")
 
         for i, hand in enumerate(hands):
             display_hand(hand, i + 1)
@@ -77,17 +67,24 @@ def main():
                 discard_pile.append(deck.pop())
             else:
                 display_hand(hand, i + 1)
-                drop_index = int(input("Enter the index of the card you want to drop: ")) - 1
-                if 0 <= drop_index < len(hand):
-                    dropped_card = hand.pop(drop_index)
+                drop_index = int(input("Enter the index of the card you want to drop (1-5): "))
+                if 1 <= drop_index <= 5:
+                    dropped_card = hand.pop(drop_index - 1)
                     print(f"Dropped card: {dropped_card['rank']} of {dropped_card['suit']}")
                     discard_pile.append(drop_index)
-                    hand.insert(drop_index, drawn_card)
+                    hand.insert(drop_index - 1, drawn_card)
                 else:
                     print("Invalid index. Card not dropped.")
                     discard_pile.append(deck.pop())
 
-        determine_winner(hands)
+        winner = determine_winner(hands)
+        if winner:
+            print(f"\nPlayer {winner} wins with Tres y Dos!")
+            break
+
+        if rounds == max_rounds:
+            print("\nMaximum rounds reached. No winner.")
+            break
 
     print("\nDiscard Pile:")
     for card in discard_pile:
