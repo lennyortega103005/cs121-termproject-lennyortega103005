@@ -78,7 +78,7 @@ def main():
                     discard_pile.append(deck.pop())
 
         winner = determine_winner(hands)
-        if winner:
+        if winner == 1:
             print(f"\nPlayer {winner} wins with Tres y Dos!")
             break
 
